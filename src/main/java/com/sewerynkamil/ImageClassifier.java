@@ -1,5 +1,7 @@
 package com.sewerynkamil;
 
+import org.apache.spark.ml.classification.MultilayerPerceptronClassificationModel;
+import org.apache.spark.ml.classification.MultilayerPerceptronClassifier;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
@@ -17,6 +19,14 @@ public class ImageClassifier {
 
         Dataset<Row> train = spark.read().format("libsvm").load("data/train.txt");
         Dataset<Row> test = spark.read().format("libsvm").load("data/test.txt");
+
+        int[] layers = new int[] {150 * 150, 100, 20, 10, 2};
+
+        MultilayerPerceptronClassifier trainer = new MultilayerPerceptronClassifier()
+                .setLayers(layers)
+                .setMaxIter(20);
+
+        MultilayerPerceptronClassificationModel model = trainer.fit(train);
     }
 
     public static void preProcessImage() throws IOException {
