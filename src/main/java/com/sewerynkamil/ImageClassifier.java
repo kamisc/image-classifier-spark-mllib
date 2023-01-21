@@ -2,6 +2,7 @@ package com.sewerynkamil;
 
 import org.apache.spark.ml.classification.MultilayerPerceptronClassificationModel;
 import org.apache.spark.ml.classification.MultilayerPerceptronClassifier;
+import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
@@ -27,6 +28,12 @@ public class ImageClassifier {
                 .setMaxIter(20);
 
         MultilayerPerceptronClassificationModel model = trainer.fit(train);
+        Dataset<Row> result = model.transform(test);
+
+        Dataset<Row> predictionAndLabels = result.select("rowPrediction", "label");
+        BinaryClassificationEvaluator evaluator = new BinaryClassificationEvaluator()
+                .setMetricName("areaUnderROC");
+        System.out.println("Test set AUC-ROC = " + evaluator.evaluate(predictionAndLabels));
     }
 
     public static void preProcessImage() throws IOException {

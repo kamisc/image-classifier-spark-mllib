@@ -28,7 +28,7 @@ public class ImagePreprocessor {
     }
 
     private void loadImages() throws IOException {
-        Files.walkFileTree(Paths.get(this.imageDirectory), new SimpleFileVisitor<>() {
+        Files.walkFileTree(Paths.get(this.imageDirectory), new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 images.add(ImageIO.read(file.toFile()));
